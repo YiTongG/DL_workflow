@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mnist-training-job
+spec:
+  template:
+    spec:
+      containers:
+      - name: mnist-training
+        image: us-central1-docker.pkg.dev/my-projectgke/docker-repo/mnist-training:latest
+        command: ["python", "train.py"]
+        volumeMounts:
+        - name: model-volume
+          mountPath: /model
+      volumes:
+      - name: model-volume
+        persistentVolumeClaim:
+          claimName: mnist-model-pvc
+      restartPolicy: Never
+

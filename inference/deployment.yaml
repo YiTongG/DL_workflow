@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inference-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: inference
+  template:
+    metadata:
+      labels:
+        app: inference
+    spec:
+      containers:
+      - name: inference
+        image: us-central1-docker.pkg.dev/my-projectgke/docker-repo/inference:latest
+        ports:
+        - containerPort: 5000
+        volumeMounts:
+        - name: model-volume
+          mountPath: /model
+      volumes:
+      - name: model-volume
+        persistentVolumeClaim:
+          claimName: mnist-model-pvc
+
